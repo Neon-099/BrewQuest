@@ -1,8 +1,9 @@
 import logo from '../assets/logo.png';
 import email from '../assets/email.png';
 import heroBg from '../assets/heroBg.png';
+import {Link} from 'react-router-dom';
 
-const LandingPage = () => {
+const Landing = () => {
     return (
         <div>
             <header className='flex justify-between items-center p-5 shadow-md max-w-full mx-auto'>
@@ -39,9 +40,9 @@ const LandingPage = () => {
                             Explore our curated selection of premium coffee beans, brewing equipment, and accessories. 
                             Discover the perfect blend for your taste and elevate your coffee experience.
                         </p>
-                        <button className="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-colors duration-300 transform hover:scale-105">
+                        <Link to="/home" className="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-colors duration-300 transform hover:scale-105">
                             Shop Now
-                        </button>
+                        </Link>
                     </div>
                 </section>
 
@@ -161,4 +162,4 @@ const LandingPage = () => {
     )
 }
 
-export default LandingPage;
+export default Landing;
