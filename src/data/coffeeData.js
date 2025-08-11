@@ -11,7 +11,7 @@ export const coffeeData = [
         categories: ['Espresso', 'Coffee'],
     },
     {
-        id: 2,
+        id: 1,
         name: 'Cappuccino',
         image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
         description: 'Cappuccino is a coffee drink that is typically made by pouring hot espresso over steamed milk. It is a popular drink in Italy and is often served with a slice of cake or a scoop of ice cream.',
@@ -21,7 +21,7 @@ export const coffeeData = [
         categories: ['Espresso', 'Coffee'],
     },
     {
-        id: 3,
+        id: 2,
         name: 'Latte',
         image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
         description: 'Latte is a coffee drink that is typically made by pouring hot espresso over steamed milk. It is a popular drink in Italy and is often served with a slice of cake or a scoop of ice cream.',
@@ -31,7 +31,7 @@ export const coffeeData = [
         categories: ['Espresso', 'Coffee'],
     },
     {
-        id: 4,
+        id: 3,
         name: 'Americano',
         image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
         description: 'Americano is a coffee drink that is typically made by pouring hot espresso over steamed milk. It is a popular drink in Italy and is often served with a slice of cake or a scoop of ice cream.',

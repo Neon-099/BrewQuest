@@ -34,20 +34,18 @@ const Home = () => {
 
             <SearchBar />
             
-            <div className='mx-auto max-w-4xl space-y-10 '>
+            <div className='mx-auto max-w-4xl'>
             <h2 className='font-semibold text-xl my-10 '>Explore our coffee</h2>
+                <div className='grid grid-cols-3 gap-10'>
                 {coffeeData.map((coffee) => (
-                    <div className='flex justify-center items-center grid grid-cols-3 gap-10 ' 
-                        onClick={() => setSelectedId(coffee.id)}>
-                    
+                    <div key={coffee.id} onClick={() => setSelectedId(coffee.id)}>
                        <Cards
-                        key={coffee.id}
                         title={coffee.name}
                         description={coffee.description}
                         img={coffee.image} /> 
-                    
                     </div>
                     ))}
+                </div>
                 </div>
             
             {/*MODAL*/}
