@@ -1,7 +1,7 @@
 import logo from '../assets/logo.png';
 import hero from '../assets/hero.png';
 import { Link } from 'react-router-dom';
-import { useState } from 'react'; 
+import { useEffect, useState } from 'react'; 
 import {coffeeData} from '../data/coffeeData.js'
 import SearchBar from '../components/SearchBar.jsx';
 import Cards from '../components/Cards.jsx';
@@ -9,8 +9,36 @@ import Cards from '../components/Cards.jsx';
 
 const Home = () => {
     
-    const[selectedId, setSelectedId] = useState(undefined);
+    const [selectedId, setSelectedId] = useState(undefined);
     const selectedCoffee = coffeeData.find((coffee) => coffee.id === selectedId);
+
+    // Local UI state for redesigned modal
+    const [selectedOption, setSelectedOption] = useState('Served');
+    const [quantity, setQuantity] = useState(1);
+
+    // Reset option/quantity when opening a new coffee
+    useEffect(() => {
+        if (selectedCoffee) {
+            setSelectedOption('Served');
+            setQuantity(1);
+        }
+    }, [selectedCoffee]);
+
+    // Close on Escape key and lock scroll when modal is open
+    useEffect(() => {
+        if (!selectedCoffee) return;
+
+        const onKeyDown = (event) => {
+            if (event.key === 'Escape') setSelectedId(null);
+        };
+        document.addEventListener('keydown', onKeyDown);
+        const originalOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.removeEventListener('keydown', onKeyDown);
+            document.body.style.overflow = originalOverflow;
+        };
+    }, [selectedCoffee]);
 
     return (
         <div>
@@ -48,21 +76,119 @@ const Home = () => {
                 </div>
                 </div>
             
-            {/*MODAL*/}
+            {/* Redesigned Modal */}
             {selectedCoffee && (
-                <div className='fixed inset-0 flex justify-center bg-black bg-opacity-50'>
-                    <div className='bg-white rounded-lg p-6 max-w-md w-full relative shadow-lg'>   
+                <div
+                    className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4'
+                    onClick={(e) => {
+                        if (e.target === e.currentTarget) setSelectedId(null);
+                    }}
+                >
+                    <div
+                        role='dialog'
+                        aria-modal='true'
+                        aria-labelledby='coffee-modal-title'
+                        className='relative w-[min(92vw,900px)] rounded-2xl bg-white shadow-2xl'
+                    >
+                        {/* Close button */}
                         <button 
-                            className='absolute top-2 right-2 text-gray-500 hover:text-gray-500 text-xl'
+                            aria-label='Close'
+                            className='absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white/90 text-gray-600 shadow-sm transition hover:bg-gray-50 hover:text-gray-800'
                             onClick={() => setSelectedId(null)}
                             >
-                                Close
+                            ×
                         </button>
 
-                       <Cards 
-                        title={selectedCoffee.name}
-                        description={selectedCoffee.description}
-                        img={selectedCoffee.image} />
+                        <div className='grid grid-cols-1 md:grid-cols-2 gap-0 overflow-hidden rounded-2xl'>
+                            {/* Image */}
+                            <div className='relative bg-gray-50 md:min-h-[420px]'>
+                                <img
+                                    src={selectedCoffee.image}
+                                    alt={selectedCoffee.name}
+                                    className='h-full w-full object-cover'
+                                />
+                                <div className='pointer-events-none absolute inset-0 bg-gradient-to-tr from-black/10 via-transparent to-transparent' />
+                            </div>
+
+                            {/* Content */}
+                            <div className='p-6 md:p-8'>
+                                <h2 id='coffee-modal-title' className='text-2xl font-semibold tracking-tight text-gray-900'>
+                                    {selectedCoffee.name}
+                                </h2>
+                                <p className='mt-2 text-sm leading-relaxed text-gray-600'>
+                                    {selectedCoffee.description}
+                                </p>
+
+                                <div className='mt-4 flex items-baseline gap-2'>
+                                    <span className='text-xl font-semibold text-[#e88a31]'>${selectedCoffee.price}</span>
+                                    <span className='text-xs text-gray-400'>/ cup</span>
+                                </div>
+
+                                {/* Options */}
+                                <div className='mt-6'>
+                                    <h3 className='mb-3 text-sm font-medium text-gray-800'>Serving option</h3>
+                                    <div className='inline-flex rounded-lg border border-gray-200 bg-white p-1 shadow-sm'>
+                                        {['Served', 'Unserved'].map((option) => (
+                                            <button
+                                                key={option}
+                                                type='button'
+                                                onClick={() => setSelectedOption(option)}
+                                                className={`px-4 py-2 text-sm font-medium rounded-md transition ${
+                                                    selectedOption === option
+                                                        ? 'bg-[#F2EDE8] text-gray-900'
+                                                        : 'text-gray-600 hover:bg-gray-50'
+                                                }`}
+                                                aria-pressed={selectedOption === option}
+                                            >
+                                                {option}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Quantity */}
+                                <div className='mt-5'>
+                                    <h3 className='mb-3 text-sm font-medium text-gray-800'>Quantity</h3>
+                                    <div className='inline-flex items-center rounded-lg border border-gray-200 bg-white shadow-sm'>
+                                        <button
+                                            type='button'
+                                            className='px-3 py-2 text-gray-600 hover:bg-gray-50'
+                                            onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                                            aria-label='Decrease quantity'
+                                        >
+                                            −
+                                        </button>
+                                        <span className='min-w-[3rem] text-center text-sm font-medium text-gray-900'>
+                                            {quantity}
+                                        </span>
+                                        <button
+                                            type='button'
+                                            className='px-3 py-2 text-gray-600 hover:bg-gray-50'
+                                            onClick={() => setQuantity((q) => q + 1)}
+                                            aria-label='Increase quantity'
+                                        >
+                                            +
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Actions */}
+                                <div className='mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center'>
+                                    <button
+                                        type='button'
+                                        className='inline-flex w-full items-center justify-center rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 transition hover:bg-red-100 sm:w-auto'
+                                    >
+                                        Delete order
+                                    </button>
+                                    <button
+                                        type='button'
+                                        className='inline-flex w-full items-center justify-center rounded-lg bg-[#e88a31] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#E57D1A] sm:w-auto'
+                                    >
+                                        View Order Served
+                                    </button>
+                                </div>
+                        </div>
+                        </div>
                     </div>
                 </div>
             )}
