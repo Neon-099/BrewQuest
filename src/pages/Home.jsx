@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import {coffeeData} from '../data/coffeeData.js'
 import SearchBar from '../components/SearchBar.jsx';
 import Cards from '../components/Cards.jsx';
-
+import { useStore } from '../store/orderStore';
 
 const Home = () => {
     
@@ -13,7 +13,7 @@ const Home = () => {
     const selectedCoffee = coffeeData.find((coffee) => coffee.id === selectedId);
 
     // Local UI state for redesigned modal
-    const [selectedOption, setSelectedOption] = useState('Served');
+    const [selectedOption, setSelectedOption] = useState('Unserved');
     const [quantity, setQuantity] = useState(1);
 
     // Reset option/quantity when opening a new coffee
@@ -39,6 +39,15 @@ const Home = () => {
             document.body.style.overflow = originalOverflow;
         };
     }, [selectedCoffee]);
+    
+    //DESTRUCTURING THE ORDER OBJ in useStore
+    const {addOrder, deleteOrder,orders, roundedValue} = useStore();
+
+    const handleOrder = () => {
+        addOrder(selectedCoffee, selectedCoffee.price, quantity, );
+    }
+
+    console.log(orders)
 
     return (
         <div>
@@ -65,8 +74,8 @@ const Home = () => {
             <div className='mx-auto max-w-4xl'>
             <h2 className='font-semibold text-xl my-10 '>Explore our coffee</h2>
                 <div className='grid grid-cols-3 gap-10'>
-                {coffeeData.map((coffee) => (
-                    <div key={coffee.id} onClick={() => setSelectedId(coffee.id)}>
+                {coffeeData.map((coffee, index) => (
+                    <div key={index} onClick={() => setSelectedId(coffee.id)}>
                        <Cards
                         title={coffee.name}
                         description={coffee.description}
@@ -171,11 +180,22 @@ const Home = () => {
                                         </button>
                                     </div>
                                 </div>
+                                
+                                {/*TOTAL QUANTITY*/}
+                                <div className='mt-6 flex flex-col gap-3 '>
+                                    <h3 className=' text-sm font-medium text-gray-800'>Total Quantity</h3>
+                                    <span className='text-xl font-semibold text-[#e88a31]'> ${roundedValue}</span>
+                                    <button className='inline-flex w-full items-center justify-center rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 transition hover:bg-red-100'
+                                            onClick={handleOrder}
+                                        >
+                                        Place Order 
+                                    </button>
+                                </div>
 
                                 {/* Actions */}
                                 <div className='mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center'>
                                     <button
-                                        type='button'
+                                        onClick={() => deleteOrder(orders.id)}
                                         className='inline-flex w-full items-center justify-center rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 transition hover:bg-red-100 sm:w-auto'
                                     >
                                         Delete order
