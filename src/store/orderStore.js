@@ -7,7 +7,7 @@ export const useStore = create(
         (set) => ({
         orders: [],  //store here the orders
 
-            addOrder: (coffee ,price, quantity) => 
+            addOrder: (coffee, price, quantity) => 
                 set((state) => {
                     const totalPrice = price * quantity;
                     const roundedValue = Math.round(totalPrice * 100) / 100;
@@ -16,6 +16,8 @@ export const useStore = create(
                         id: crypto.randomUUID(),
                         name: coffee.name,
                         price: roundedValue,
+                        quantity: quantity,
+                        originalPrice: price,
                     };
 
                     //RETURN THE NEW ORDER AND THE COFFEE

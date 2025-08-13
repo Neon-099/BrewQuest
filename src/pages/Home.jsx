@@ -5,21 +5,27 @@ import { useEffect, useState } from 'react';
 import {coffeeData} from '../data/coffeeData.js'
 import SearchBar from '../components/SearchBar.jsx';
 import Cards from '../components/Cards.jsx';
+import ViewOrdersModal from '../components/ViewOrdersModal.jsx';
+import ToastNotification from '../components/ToastNotification.jsx';
 import { useStore } from '../store/orderStore';
 
 const Home = () => {
     
     const [selectedId, setSelectedId] = useState(undefined);
     const selectedCoffee = coffeeData.find((coffee) => coffee.id === selectedId);
-
+    const [price, setPrice] = useState(0);
     // Local UI state for redesigned modal
-    const [selectedOption, setSelectedOption] = useState('Unserved');
+    const [selectedOption, setSelectedOption] = useState('Service');
     const [quantity, setQuantity] = useState(1);
+    // State for view orders modal
+    const [isViewOrdersOpen, setIsViewOrdersOpen] = useState(false);
+    // State for toast notifications
+    const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
 
     // Reset option/quantity when opening a new coffee
     useEffect(() => {
         if (selectedCoffee) {
-            setSelectedOption('Served');
+            setSelectedOption('Service');
             setQuantity(1);
         }
     }, [selectedCoffee]);
@@ -41,14 +47,45 @@ const Home = () => {
     }, [selectedCoffee]);
     
     //DESTRUCTURING THE ORDER OBJ in useStore
-    const {addOrder, deleteOrder,orders, roundedValue} = useStore();
+    const {addOrder,orders} = useStore();
 
     const handleOrder = () => {
-        addOrder(selectedCoffee, selectedCoffee.price, quantity, );
+        try {
+            addOrder(selectedCoffee, selectedCoffee.price, quantity);
+            
+            // Show success notification
+            setToast({
+                show: true,
+                message: `Successfully added ${quantity} ${quantity === 1 ? 'cup' : 'cups'} of ${selectedCoffee.name} to your cart!`,
+                type: 'success'
+            });
+            
+            // Close the modal after successful order
+            setSelectedId(null);
+        } catch (error) {
+            // Show error notification
+            setToast({
+                show: true,
+                message: 'Failed to add order. Please try again.',
+                type: 'error'
+            });
+        }
     }
 
-    console.log(orders)
+    
 
+    useEffect(() => {
+        //prevent errors when modal closed
+        if(selectedCoffee) {
+            const totalPrice = selectedCoffee.price * quantity;
+            const rounded = totalPrice.toFixed(2);
+            setPrice(rounded);
+            return;
+        }
+       
+        
+    }, [selectedCoffee , quantity]);
+    console.log(orders)
     return (
         <div>
         <header className='flex justify-between items-center p-5 shadow-md '>
@@ -60,7 +97,15 @@ const Home = () => {
                 <Link>Shop</Link>
                 <Link>Learn More</Link>
                 <Link>Locations</Link>
-                <button className='bg-[#F2EDE8] py-2 px-6 rounded-lg hover:bg-[#e5dbd1]'>Cart</button>
+                <button 
+                    onClick={() => setIsViewOrdersOpen(true)}
+                    className='bg-[#F2EDE8] py-2 px-6 rounded-lg hover:bg-[#e5dbd1] flex items-center space-x-2'
+                >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    <span>Cart ({orders.length})</span>
+                </button>
             </nav>
         </header>
 
@@ -83,7 +128,7 @@ const Home = () => {
                     </div>
                     ))}
                 </div>
-                </div>
+            </div>
             
             {/* Redesigned Modal */}
             {selectedCoffee && (
@@ -137,7 +182,7 @@ const Home = () => {
                                 <div className='mt-6'>
                                     <h3 className='mb-3 text-sm font-medium text-gray-800'>Serving option</h3>
                                     <div className='inline-flex rounded-lg border border-gray-200 bg-white p-1 shadow-sm'>
-                                        {['Served', 'Unserved'].map((option) => (
+                                        {['Service', 'Self Service'].map((option) => (
                                             <button
                                                 key={option}
                                                 type='button'
@@ -183,35 +228,35 @@ const Home = () => {
                                 
                                 {/*TOTAL QUANTITY*/}
                                 <div className='mt-6 flex flex-col gap-3 '>
-                                    <h3 className=' text-sm font-medium text-gray-800'>Total Quantity</h3>
-                                    <span className='text-xl font-semibold text-[#e88a31]'> ${roundedValue}</span>
+                                    <h3 className=' text-sm font-medium text-gray-800'>Total: </h3>
+                                    <span className='text-xl font-semibold text-[#e88a31]'> ${price}</span>
                                     <button className='inline-flex w-full items-center justify-center rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 transition hover:bg-red-100'
                                             onClick={handleOrder}
                                         >
                                         Place Order 
                                     </button>
                                 </div>
-
-                                {/* Actions */}
-                                <div className='mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:items-center'>
-                                    <button
-                                        onClick={() => deleteOrder(orders.id)}
-                                        className='inline-flex w-full items-center justify-center rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 transition hover:bg-red-100 sm:w-auto'
-                                    >
-                                        Delete order
-                                    </button>
-                                    <button
-                                        type='button'
-                                        className='inline-flex w-full items-center justify-center rounded-lg bg-[#e88a31] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#E57D1A] sm:w-auto'
-                                    >
-                                        View Order Served
-                                    </button>
-                                </div>
-                        </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             )}
+
+            {/* View Orders Modal */}
+            <ViewOrdersModal 
+                isOpen={isViewOrdersOpen}
+                onClose={() => setIsViewOrdersOpen(false)}
+                onShowNotification={setToast}
+            />
+
+            {/* Toast Notification */}
+            <ToastNotification
+                message={toast.message}
+                type={toast.type}
+                isVisible={toast.show}
+                onClose={() => setToast({ ...toast, show: false })}
+                duration={4000}
+            />
         </main>
         </div>
     )

@@ -1,6 +1,7 @@
 
 export const coffeeData = [
-    {
+    {   
+        id: 0,
         name: 'Espresso',
         image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
         description: 'Espresso is a concentrated coffee beverage that is typically served over ice. It is made by forcing hot water through finely ground coffee beans, which causes the water to evaporate and concentrate the coffee\'s flavors.',
@@ -10,15 +11,17 @@ export const coffeeData = [
         categories: ['Espresso', 'Coffee'],
     },
     {
+        id: 1,
         name: 'Cappuccino',
         image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
         description: 'Cappuccino is a coffee drink that is typically made by pouring hot espresso over steamed milk. It is a popular drink in Italy and is often served with a slice of cake or a scoop of ice cream.',
-        price: 3.99,
+        price: 4.99,
         rating: 4.5,
         reviewCount: 10,
         categories: ['Espresso', 'Coffee'],
     },
     {
+        id:2,
         name: 'Latte',
         image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
         description: 'Latte is a coffee drink that is typically made by pouring hot espresso over steamed milk. It is a popular drink in Italy and is often served with a slice of cake or a scoop of ice cream.',
@@ -28,10 +31,21 @@ export const coffeeData = [
         categories: ['Espresso', 'Coffee'],
     },
     {
+        id:3,
         name: 'Americano',
         image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
         description: 'Americano is a coffee drink that is typically made by pouring hot espresso over steamed milk. It is a popular drink in Italy and is often served with a slice of cake or a scoop of ice cream.',
         price: 3.99,
+        rating: 4.5,
+        reviewCount: 10,
+        categories: ['Espresso', 'Coffee'],
+    },
+    {   
+        id:4,
+        name: 'Mocha',
+        image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80',
+        description: 'Mocha is a coffee drink that is typically made by pouring hot espresso over steamed milk. It is a popular drink in Italy and is often served with a slice of cake or a scoop of ice cream.',
+        price: 2.79,
         rating: 4.5,
         reviewCount: 10,
         categories: ['Espresso', 'Coffee'],
