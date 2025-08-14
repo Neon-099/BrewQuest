@@ -72,7 +72,7 @@ const Home = () => {
         }
     }
 
-    
+
 
     useEffect(() => {
         //prevent errors when modal closed
@@ -85,10 +85,24 @@ const Home = () => {
        
         
     }, [selectedCoffee , quantity]);
-    console.log(orders)
+
+    //SEARCH FUNCTIONALITY
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const filteredCards = coffeeData.filter(coffee => 
+        coffee.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+
+    //FILTER ITEMS BASED ON SELECTED CATEGORY
+    const [selectedCategory, setSelectedCategory] = useState('all');
+
+    const filteredItems = filteredCards === 'all' 
+        ? coffeeData
+        : coffeeData.filter(item => item.category === selectedCategory);
+
     return (
         <div>
-        <header className='flex justify-between items-center p-5 shadow-md '>
+        <header className='sticky top-0 z-50 bg-white flex justify-between items-center p-5 shadow-md '>
             <div className='flex items-center justify-between mx-4 space-x-3'>
                 <img src={logo} alt="logo" />
                 <h1 className='font-semibold text-2xl '>BrewQuest</h1>
@@ -114,19 +128,35 @@ const Home = () => {
                 <img src={hero} alt="" />
             </div>
 
-            <SearchBar />
+            <SearchBar 
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}/>
             
             <div className='mx-auto max-w-4xl'>
             <h2 className='font-semibold text-xl my-10 '>Explore our coffee</h2>
+             <div className="flex gap-2 mb-4">
+                <button onClick={() => setSelectedCategory("all")}>All</button>
+                <button onClick={() => setSelectedCategory("iced-coffee")}>Iced Coffee</button>
+                <button onClick={() => setSelectedCategory("desserts")}>Desserts</button>
+            </div>
                 <div className='grid grid-cols-3 gap-10'>
-                {coffeeData.map((coffee, index) => (
+                {filteredCards.length > 0 ? (
+                    filteredCards.map((coffee, index) => (
                     <div key={index} onClick={() => setSelectedId(coffee.id)}>
                        <Cards
                         title={coffee.name}
                         description={coffee.description}
                         img={coffee.image} /> 
                     </div>
-                    ))}
+                    ))
+                    ) : (
+                        <div className='text-center py-12'>
+                            <div className='bg-white rounded-lg shadow-sm p-8'>
+                                <p className='text-xl text-red-500'>No cards found!</p>
+                                <p className='text-gray-400 mt-2'>Try adjusting your search terms</p>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
             

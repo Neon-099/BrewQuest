@@ -1,9 +1,10 @@
 
+import { useState } from 'react';
 import search from '../assets/search.png';
 
 const SearchBar = ( {searchTerm, setSearchTerm} ) => {
 
-    
+
     return (
         <div className='relative flex justify-center w-full max-w-4xl mx-auto'>
             <input
