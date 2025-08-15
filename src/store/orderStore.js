@@ -7,7 +7,7 @@ export const useStore = create(
         (set) => ({
         orders: [],  //store here the orders
 
-            addOrder: (coffee, price, quantity) => 
+            addOrder: (coffee, price, quantity, servingOption) => 
                 set((state) => {
                     const totalPrice = price * quantity;
                     const roundedValue = Math.round(totalPrice * 100) / 100;
@@ -18,6 +18,7 @@ export const useStore = create(
                         price: roundedValue,
                         quantity: quantity,
                         originalPrice: price,
+                        servingOption,
                     };
 
                     //RETURN THE NEW ORDER AND THE COFFEE
