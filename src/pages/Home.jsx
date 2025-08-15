@@ -21,6 +21,10 @@ const Home = () => {
     const [isViewOrdersOpen, setIsViewOrdersOpen] = useState(false);
     // State for toast notifications
     const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+   
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const [selectedCategory, setSelectedCategory] = useState('All');
 
     // Reset option/quantity when opening a new coffee
     useEffect(() => {
@@ -45,13 +49,15 @@ const Home = () => {
             document.body.style.overflow = originalOverflow;
         };
     }, [selectedCoffee]);
-    
+
     //DESTRUCTURING THE ORDER OBJ in useStore
     const {addOrder,orders} = useStore();
 
+    const servingOption = ['Service', 'Self Service'];
+
     const handleOrder = () => {
         try {
-            addOrder(selectedCoffee, selectedCoffee.price, quantity);
+            addOrder(selectedCoffee, selectedCoffee.price, quantity, selectedOption);
             
             // Show success notification
             setToast({
@@ -87,18 +93,18 @@ const Home = () => {
     }, [selectedCoffee , quantity]);
 
     //SEARCH FUNCTIONALITY
-    const [searchTerm, setSearchTerm] = useState('');
-
-    const filteredCards = coffeeData.filter(coffee => 
+    const searchedItems = coffeeData.filter(coffee => 
         coffee.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
 
     //FILTER ITEMS BASED ON SELECTED CATEGORY
-    const [selectedCategory, setSelectedCategory] = useState('all');
+    const filteredItems =
+    selectedCategory === 'All' 
+        ? searchedItems
+        : searchedItems.filter(item => item.categories === selectedCategory);
 
-    const filteredItems = filteredCards === 'all' 
-        ? coffeeData
-        : coffeeData.filter(item => item.category === selectedCategory);
+    //FILTERED BTNS
+    const categories = ['All', 'Coffee', 'Desserts'];
 
     return (
         <div>
@@ -135,14 +141,23 @@ const Home = () => {
             <div className='mx-auto max-w-4xl'>
             <h2 className='font-semibold text-xl my-10 '>Explore our coffee</h2>
              <div className="flex gap-2 mb-4">
-                <button onClick={() => setSelectedCategory("all")}>All</button>
-                <button onClick={() => setSelectedCategory("iced-coffee")}>Iced Coffee</button>
-                <button onClick={() => setSelectedCategory("desserts")}>Desserts</button>
+                {categories.map((category) => (
+                    <button 
+                        key={category}
+                        onClick={() => setSelectedCategory(category)}
+                        className={`pb-1 border-b-2 transition-colors duration-200
+                            ${selectedCategory === category 
+                                ? "border-b-amber-600 text-amber-600 font-semibold" // active category
+                                : "border-b-transparent text-gray-600 hover:text-amber-600"}`
+                        }>
+                            {category}
+                    </button>
+                ))}        
             </div>
                 <div className='grid grid-cols-3 gap-10'>
-                {filteredCards.length > 0 ? (
-                    filteredCards.map((coffee, index) => (
-                    <div key={index} onClick={() => setSelectedId(coffee.id)}>
+                {filteredItems.length > 0 ? (
+                    filteredItems.map((coffee) => (
+                    <div key={coffee.id} onClick={() => setSelectedId(coffee.id)}>
                        <Cards
                         title={coffee.name}
                         description={coffee.description}
@@ -185,7 +200,7 @@ const Home = () => {
 
                         <div className='grid grid-cols-1 md:grid-cols-2 gap-0 overflow-hidden rounded-2xl'>
                             {/* Image */}
-                            <div className='relative bg-gray-50 md:min-h-[420px]'>
+                            <div className='relative bg-gray-50 md:min-h-[420px] height-[420px]'>
                                 <img
                                     src={selectedCoffee.image}
                                     alt={selectedCoffee.name}
@@ -212,7 +227,7 @@ const Home = () => {
                                 <div className='mt-6'>
                                     <h3 className='mb-3 text-sm font-medium text-gray-800'>Serving option</h3>
                                     <div className='inline-flex rounded-lg border border-gray-200 bg-white p-1 shadow-sm'>
-                                        {['Service', 'Self Service'].map((option) => (
+                                        {servingOption.map((option) => (
                                             <button
                                                 key={option}
                                                 type='button'
