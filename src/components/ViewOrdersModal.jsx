@@ -1,6 +1,6 @@
 import { useStore } from '../store/orderStore';
 
-const ViewOrdersModal = ({ isOpen, onClose, onShowNotification }) => {
+const ViewOrdersModal = ({ isOpen, onClose, onShowNotification}) => {
     const { orders, deleteOrder } = useStore();
 
     if (!isOpen) return null;
@@ -80,6 +80,9 @@ const ViewOrdersModal = ({ isOpen, onClose, onShowNotification }) => {
                                                         </h4>
                                                         <p className="text-sm text-gray-500">
                                                             Quantity: {order.quantity} × ${order.originalPrice}
+                                                        </p>
+                                                        <p className="text-sm text-gray-500">
+                                                            Serving Option: {order.servingOption}
                                                         </p>
                                                     </div>
                                                 </div>
